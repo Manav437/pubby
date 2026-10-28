@@ -1,65 +1,54 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight, Link2, ListMusic, Radio } from "lucide-react";
+import { CreateRoomButton } from "@/components/create-room-button";
+import { ThemeToggle } from "@/components/theme-provider";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+const wave = [14, 24, 38, 22, 48, 64, 36, 76, 52, 90, 62, 100, 78, 48, 68, 88, 54, 34, 62, 42, 24, 36, 18];
+
+export default async function Home({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+    const { error } = await searchParams;
+
+    return <div className="landing">
+        <header className="landing-header">
+            <Link href="/" className="brand"><span className="brand-mark">ııı</span>pubby</Link>
+            {/*<span className="landing-tagline">A little room for good music.</span>*/}
+            <ThemeToggle />
+        </header>
+
+        <main className="landing-main">
+            <section className="landing-hero">
+                <div className="landing-copy">
+                    <span className="landing-kicker"><span aria-hidden="true" />Made for listening together</span>
+                    <h1>Good music.<br /><span>Better company.</span></h1>
+                    <p>A room for your friends and whatever’s on repeat. Share a link, build the queue, and press play.</p>
+                    <div className="landing-cta">
+                        <CreateRoomButton />
+                        {/*<span>No account needed.
+                            <br />
+                            Just bring a good track.
+                        </span>*/}
+                    </div>
+                    {error && <p role="alert" className="error">Could not create a room. Please try again.</p>}
+                </div>
+                <div className="listening-art" aria-hidden="true">
+                    <div className="art-topline"><span>PUBBY / LISTENING CLUB</span><ArrowUpRight size={18} /></div>
+                    <div className="art-composition">
+                        <div className="record-sleeve"><span className="sleeve-label">SIDE A</span><div className="sound-wave">{wave.map((height, i) => <i key={i} style={{ height: `${height}%` }} />)}</div><span className="sleeve-title">IN GOOD<br />COMPANY.</span></div>
+                        <div className="vinyl"><div className="vinyl-label"><span>pubby</span><i /></div></div>
+                    </div>
+                    <div className="art-caption"><span>Different tastes. One queue.</span><span>VOL. 001</span></div>
+                </div>
+            </section>
+            <section className="landing-steps" aria-label="How it works">
+                <div><span className="step-number">01</span><div><h2><Link2 size={15} />Make a room</h2><p>Send the link. Your friends are invited.</p></div></div>
+                <div><span className="step-number">02</span><div><h2><ListMusic size={15} />Pass the aux</h2><p>Everyone adds their YouTube favorites.</p></div></div>
+                <div><span className="step-number">03</span><div><h2><Radio size={15} />Find your rhythm</h2><p>Listen in sync and talk in the room chat.</p></div></div>
+            </section>
+        </main>
+
+        {/*<footer className="landing-footer">
+            <span>pubby — a shared listening space</span>
+            <span>Less scrolling. More listening.</span>
+        </footer>*/}
+    </div>;
 }
