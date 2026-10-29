@@ -1,4 +1,6 @@
 "use client";
+import { buttonClassName } from "@/lib/ui-styles";
+import { cn } from "@/lib/utils";
 
 import { playbackPosition, clampSeek, formatPlaybackTime } from "@/lib/playback";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -108,7 +110,7 @@ export function YouTubePlayer({ videoId, room, clockOffset, isHost, busy, onCont
     const position = draft ?? Math.min(playback.current, playback.duration || playback.current);
 
     return <>
-        <div className="player">
+        <div className="aspect-video w-full border-0 bg-[#0b0d0a] min-[761px]:min-h-0 min-[761px]:flex-1 min-[761px]:aspect-auto [&>div]:h-full [&>div]:w-full [&_iframe]:h-full [&_iframe]:w-full">
             {videoId ? <YouTube
                 videoId={videoId}
                 opts={opts}
@@ -118,12 +120,13 @@ export function YouTubePlayer({ videoId, room, clockOffset, isHost, busy, onCont
                 onError={() => toast.error(isHost ? "This video cannot play. Use Skip to continue." : "This video cannot play. Ask the host to skip it.")}
                 onStateChange={event => { if (event.data === -1 && latest.current.room.is_playing) setBlocked(true); }}
                 className="w-full h-full"
-            /> : <div className="player-empty"><Music2 size={28}/><strong>A little quiet in here.</strong><span>Add a video to start listening.</span></div>}
+            /> : <div className="flex h-full flex-col items-center justify-center gap-2.5 p-5 text-center text-[#a1a898] [&>strong]:text-lg [&>strong]:font-medium [&>strong]:text-[#e8ebe3]"><Music2 size={28}/><strong>A little quiet in here.</strong><span>Add a video to start listening.</span></div>}
         </div>
-        <div className="player-controls" aria-label="Playback controls">
-            <div className="timeline">
+        <div className="shrink-0 border-b border-border pt-2.5 pb-3.5" aria-label="Playback controls">
+            <div className="flex items-center gap-4 max-[480px]:gap-2.5">
                 <label className="sr-only" htmlFor="playback-timeline">Video timeline</label>
                 <input
+                    className="m-0 h-7 w-full min-w-0 flex-1 cursor-pointer border-0 bg-transparent p-0 accent-accent disabled:cursor-default disabled:opacity-65"
                     id="playback-timeline"
                     type="range"
                     min={0}
@@ -142,16 +145,16 @@ export function YouTubePlayer({ videoId, room, clockOffset, isHost, busy, onCont
                     }}
                     onBlur={event => { if (draft !== null) void seekTo(Number(event.currentTarget.value)); }}
                 />
-                <span className="timeline-time">{formatPlaybackTime(position)} <span className="muted">/ {playback.duration ? formatPlaybackTime(playback.duration) : "—:—"}</span></span>
+                <span className="text-xs whitespace-nowrap tabular-nums">{formatPlaybackTime(position)} <span className="text-muted-foreground">/ {playback.duration ? formatPlaybackTime(playback.duration) : "—:—"}</span></span>
             </div>
-            <div className="transport">
-                {isHost && <div className="inline">
-                    <button className="button" onClick={() => act(isPlaying ? "pause" : "play")} disabled={!videoId || busy}>
+            <div className="mt-2 flex items-center justify-between gap-4 max-[480px]:flex-wrap max-[480px]:gap-2.5">
+                {isHost && <div className="flex items-center gap-3">
+                    <button className={buttonClassName} onClick={() => act(isPlaying ? "pause" : "play")} disabled={!videoId || busy}>
                         {isPlaying ? <Pause size={15}/> : <Play size={15}/>}{isPlaying ? "Pause" : "Play"}
                     </button>
-                    <button className="button" onClick={() => onControl("skip")} disabled={!videoId || busy}><SkipForward size={15}/>Skip</button>
+                    <button className={buttonClassName} onClick={() => onControl("skip")} disabled={!videoId || busy}><SkipForward size={15}/>Skip</button>
                 </div>}
-                {videoId && <button className="button enable-audio" onClick={() => { if (room.is_playing) player.current?.playVideo(); else { player.current?.playVideo(); player.current?.pauseVideo(); } setBlocked(false); }}>{blocked ? "Browser blocked autoplay — click to enable playback" : "Enable playback on this device"}</button>}
+                {videoId && <button className={cn(buttonClassName, "ml-auto text-left text-xs whitespace-normal")} onClick={() => { if (room.is_playing) player.current?.playVideo(); else { player.current?.playVideo(); player.current?.pauseVideo(); } setBlocked(false); }}>{blocked ? "Browser blocked autoplay — click to enable playback" : "Enable playback on this device"}</button>}
                 <p className="sr-only" id="timeline-help">{!videoId ? "Add a video to begin." : !playback.duration ? "Waiting for video duration…" : isHost ? "Drag the timeline to seek for everyone." : "Playback and seeking follow the host."}</p>
             </div>
         </div>

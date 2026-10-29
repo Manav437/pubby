@@ -38,3 +38,7 @@ npm run build
 ```
 
 `tests/room-permissions.sql` exercises guest/host permissions, RLS, validated entries, playback revisions, advancing an empty queue, chat throttling, and renaming. Run it with `psql -v ON_ERROR_STOP=1` against a **disposable test database** after applying the migration. `tests/database-bootstrap.sql` supplies minimal Supabase Auth stand-ins for plain local PostgreSQL; never run the bootstrap on a hosted Supabase project. All test fixture data in the permission test is rolled back. Local SQL tests do not substitute for testing Supabase Auth and Realtime against the configured project after setup.
+
+## Styling
+
+Use Tailwind classes in components for layout, spacing, colors, and responsive states. Shared button/input classes live in `lib/ui-styles.ts` and use `cn()` to merge overrides. Keep `app/globals.css` limited to theme tokens, the Tailwind import, and base defaults. CSS modules cover the landing scene's palette/atmosphere, height-specific typography adjustment, and the create-room button text animation. Room breakpoints use 761px for the fixed-height desktop workspace; mobile keeps normal page scrolling.

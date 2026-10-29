@@ -1,0 +1,35 @@
+.labelWindow {
+    display: inline-block;
+    height: 1.6em;
+    overflow: hidden;
+}
+
+.labelTrack {
+    display: flex;
+    flex-direction: column;
+    transition: transform 260ms cubic-bezier(.22, .61, .36, 1);
+}
+
+.labelTrack > span {
+    display: block;
+    height: 1.6em;
+    line-height: 1.6;
+    white-space: nowrap;
+}
+
+@media (hover: hover) {
+    .roomButton:not(:disabled):hover .labelTrack {
+        transform: translateY(-50%);
+    }
+}
+
+.roomButton:not(:disabled):focus-visible .labelTrack {
+    transform: translateY(-50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .labelTrack {
+        transition: none;
+        transform: none !important;
+    }
+}
