@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Headphones, Link2, ListMusic, MessageSquare } from "lucide-react";
+import { DismissibleDetails } from "@/components/dismissible-details";
 import { CreateRoomButton } from "@/components/create-room-button";
 import { ThemeToggle } from "@/components/theme-provider";
 import styles from "./landing.module.css";
@@ -28,14 +29,14 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ e
             </Link>
 
             <nav className="flex items-center gap-6 max-[600px]:gap-4" aria-label="Main navigation">
-                <details className="relative text-xs [&>summary]:cursor-pointer [&>summary]:list-none [&>summary]:py-2.5 [&>summary]:text-[var(--landing-muted)] [&>summary::-webkit-details-marker]:hidden [&>summary:hover]:text-[var(--landing-ink)] [&[open]>summary]:text-[var(--landing-ink)] [&>ol]:absolute [&>ol]:top-11 [&>ol]:right-0 [&>ol]:m-0 [&>ol]:grid [&>ol]:w-[300px] [&>ol]:list-none [&>ol]:gap-5 [&>ol]:border [&>ol]:border-[var(--landing-line)] [&>ol]:bg-[var(--landing-panel)] [&>ol]:p-5 [&>ol]:shadow-[0_12px_30px_#293c2410] max-[600px]:[&>ol]:-right-[52px] max-[600px]:[&>ol]:w-[min(300px,calc(100vw-40px))] [&_li]:flex [&_li]:items-start [&_li]:gap-3 [&_li>svg]:mt-[3px] [&_li>svg]:shrink-0 [&_li>svg]:text-[var(--landing-muted)] [&_strong]:mb-[3px] [&_strong]:block [&_strong]:text-xs [&_strong]:font-semibold [&_li_span]:block [&_li_span]:text-[11px] [&_li_span]:leading-[1.6] [&_li_span]:text-[var(--landing-muted)]">
+                <DismissibleDetails className="relative text-xs [&>summary]:cursor-pointer [&>summary]:list-none [&>summary]:py-2.5 [&>summary]:text-[var(--landing-muted)] [&>summary::-webkit-details-marker]:hidden [&>summary:hover]:text-[var(--landing-ink)] [&[open]>summary]:text-[var(--landing-ink)] [&>ol]:absolute [&>ol]:top-11 [&>ol]:right-0 [&>ol]:m-0 [&>ol]:grid [&>ol]:w-[300px] [&>ol]:list-none [&>ol]:gap-5 [&>ol]:border [&>ol]:border-[var(--landing-line)] [&>ol]:bg-[var(--landing-panel)] [&>ol]:p-5 [&>ol]:shadow-[0_12px_30px_#293c2410] max-[600px]:[&>ol]:-right-[52px] max-[600px]:[&>ol]:w-[min(300px,calc(100vw-40px))] [&_li]:flex [&_li]:items-start [&_li]:gap-3 [&_li>svg]:mt-[3px] [&_li>svg]:shrink-0 [&_li>svg]:text-[var(--landing-muted)] [&_strong]:mb-[3px] [&_strong]:block [&_strong]:text-xs [&_strong]:font-semibold [&_li_span]:block [&_li_span]:text-[11px] [&_li_span]:leading-[1.6] [&_li_span]:text-[var(--landing-muted)]">
                     <summary>How it works</summary>
                     <ol>
                         <li><Link2 size={17} /><div><strong>Make a room</strong><span>Share the link with your friends.</span></div></li>
                         <li><ListMusic size={17} /><div><strong>Build the queue</strong><span>Everyone can add a YouTube video.</span></div></li>
                         <li><MessageSquare size={17} /><div><strong>Settle in</strong><span>Listen together and chat along.</span></div></li>
                     </ol>
-                </details>
+                </DismissibleDetails>
                 <ThemeToggle className="size-9 min-h-9 border-[var(--landing-line)] bg-[#ffffff25] p-2 text-[var(--landing-ink)] hover:bg-[#ffffff60] dark:bg-[#ffffff08]" />
             </nav>
         </header>

@@ -1,8 +1,10 @@
 # Pubby
 
+For a detailed explanation of the codebase, room/chat flows, database, and testing, see the [Project Guide](docs/PROJECT_GUIDE.md).
+
 A minimal shared YouTube room with a flat light/dark interface. Guests can add videos, chat, see who is online, and remove their queued videos. The room creator controls play, pause, seek, skip, and queue moderation.
 
-![Preview Image of App](public/pubby-img.png)
+![Preview Image of App](public/pubby-img.jpg)
 
 ## Supabase setup
 
@@ -42,3 +44,9 @@ npm run build
 ## Styling
 
 Use Tailwind classes in components for layout, spacing, colors, and responsive states. Shared button/input classes live in `lib/ui-styles.ts` and use `cn()` to merge overrides. Keep `app/globals.css` limited to theme tokens, the Tailwind import, and base defaults. CSS modules cover the landing scene's palette/atmosphere, height-specific typography adjustment, and the create-room button text animation. Room breakpoints use 761px for the fixed-height desktop workspace; mobile keeps normal page scrolling.
+
+## Video titles
+
+Queue rows and the now-playing header fetch titles and artist/channel names through `/api/videos/[id]`. The endpoint only accepts an 11-character YouTube ID, requests YouTube’s fixed public oEmbed endpoint, caches successful responses, and times out gracefully. YouTube supplies the uploader/channel name rather than verified recording-artist metadata; auto-generated ` - Topic` suffixes are omitted for display. No additional database migration or API key is needed, and existing queue entries receive metadata too. Failed lookups fall back to a generic YouTube label without interrupting playback.
+
+The host and guest embeds use the same player parameters. YouTube title/related-video overlays still depend on the embed’s hover/focus and playback state, and captions follow each viewer’s YouTube preferences. Host/guest roles do not force these overlays on or off. The player avoids seeking again when the server acknowledges an optimistic local action at essentially the same position.

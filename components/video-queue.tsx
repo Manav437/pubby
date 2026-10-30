@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { VideoDetails } from "./video-details";
 import { X, Play, ListMusic } from "lucide-react";
 import { Entry } from "@/lib/room";
 
@@ -17,8 +18,8 @@ export function VideoQueue({ queue, currentId, userId, isHost, onRemove, pending
                 </a>
                 <div className="flex min-w-0 flex-1 flex-col gap-[3px] [&>a]:truncate [&>a]:text-[11px] [&>a]:font-medium [&>a:hover]:underline [&>small]:text-[10px] [&>small]:text-muted-foreground [&>small]:[overflow-wrap:anywhere]">
                     <span className="font-mono text-[8px] tracking-[1px] text-muted-foreground uppercase group-data-[playing=true]:text-accent">{playing ? "Now playing" : "Up next"}</span>
-                    <a href={`https://www.youtube.com/watch?v=${video.video_id}`} target="_blank" rel="noopener noreferrer">{video.video_id}</a>
-                    <small>{video.display_name}{video.added_by === userId ? " · you" : ""}</small>
+                    <VideoDetails videoId={video.video_id}/>
+                    <small>Added by {video.display_name}{video.added_by === userId ? " · you" : ""}</small>
                 </div>
                 {!playing && (isHost || video.added_by === userId) && <button className="ml-auto shrink-0 border-0 bg-transparent p-[5px] text-muted-foreground hover:text-foreground" disabled={pending} onClick={() => onRemove(video.id)} aria-label={`Remove video ${index + 1}`} title="Remove from queue"><X size={14}/></button>}
             </li>;

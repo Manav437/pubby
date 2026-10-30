@@ -45,3 +45,22 @@ test('timeline labels support short videos, hours, and unknown times', () => {
     assert.equal(formatPlaybackTime(3665), '1:01:05');
     assert.equal(formatPlaybackTime(NaN), '0:00');
 });
+const { needsPlaybackSeek } = await loadPureModule('../lib/playback.ts');
+const { parseVideoDetails, artistOrChannel, isYouTubeVideoId } = await loadPureModule('../lib/youtube-metadata.ts');
+test('server acknowledgement does not seek again at the host’s current position', () => {
+    assert.equal(needsPlaybackSeek(45, 45.1, true), false);
+    assert.equal(needsPlaybackSeek(45, 60, true), true);
+    assert.equal(needsPlaybackSeek(45, 46, false), false);
+    assert.equal(needsPlaybackSeek(45, 48, false), true);
+    assert.equal(needsPlaybackSeek(NaN, 45, true), false);
+});
+test('YouTube metadata preserves real titles and safely normalizes channel names', () => {
+    const details = parseVideoDetails('dQw4w9WgXcQ', { title: '  Artist — Song (Official Video)  ', author_name: 'Artist - Topic', html: '<iframe>ignored</iframe>' });
+    assert.deepEqual(details, { videoId: 'dQw4w9WgXcQ', title: 'Artist — Song (Official Video)', author: 'Artist - Topic' });
+    assert.equal(artistOrChannel(details), 'Artist');
+    assert.equal(artistOrChannel({ ...details, author: 'A Music Channel' }), 'A Music Channel');
+});
+test('metadata rejects missing fields, malformed IDs and URL injection', () => {
+    for (const value of ['https://evil.test', '../oembed', 'short', 'dQw4w9WgXcQ?url=evil', 'dQw4w9WgXcQ\n']) assert.equal(isYouTubeVideoId(value), false);
+    for (const value of [null, {}, { title: '', author_name: 'Author' }, { title: 'Song', author_name: 5 }, { title: 'Song' }]) assert.equal(parseVideoDetails('dQw4w9WgXcQ', value), null);
+});

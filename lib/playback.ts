@@ -16,3 +16,9 @@ export function formatPlaybackTime(seconds: number): string {
     const remainder = String(total % 60).padStart(2, "0");
     return hours ? `${hours}:${String(minutes).padStart(2, "0")}:${remainder}` : `${minutes}:${remainder}`;
 }
+
+export function needsPlaybackSeek(current: number, target: number, immediate: boolean): boolean {
+    if (!Number.isFinite(current) || !Number.isFinite(target)) return false;
+    // Do not seek again when an optimistic local action is confirmed at the same position.
+    return Math.abs(current - target) > (immediate ? 0.35 : 2);
+}

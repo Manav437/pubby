@@ -1,13 +1,10 @@
 "use client";
-import { buttonClassName, primaryButtonClassName } from "@/lib/ui-styles";
-import { cn } from "@/lib/utils";
+import { buttonClassName } from "@/lib/ui-styles";
 import { playbackPosition } from "@/lib/playback";
 import { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
-import { ArrowLeft, Copy } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { RoomWorkspace } from "@/components/room-workspace";
-import { ThemeToggle } from "@/components/theme-provider";
+import { RoomNavbar } from "@/components/room-navbar";
 import { Snapshot, ensureGuest, guestName, errorMessage } from "@/lib/room";
 import { toast } from "sonner";
 export default function RoomClient({ roomId }: { roomId: string }) {
@@ -98,46 +95,7 @@ export default function RoomClient({ roomId }: { roomId: string }) {
     const room = snapshot?.room;
     const isHost = room?.host_id === userId;
     return <div className="min-h-dvh w-full min-[761px]:grid min-[761px]:h-dvh min-[761px]:min-h-0 min-[761px]:grid-rows-[68px_minmax(0,1fr)] min-[761px]:overflow-hidden">
-        <header className="flex min-h-[68px] items-center justify-between gap-6 border-b border-border px-7 py-3 min-[761px]:min-h-0 max-[760px]:gap-3 max-[760px]:px-4 max-[380px]:gap-2 max-[380px]:px-3">
-            <div className="flex min-w-0 items-center gap-6 max-[1200px]:gap-4 max-[760px]:gap-3 max-[380px]:gap-2">
-                <Link href="/" className="inline-flex items-center gap-2.5 text-[29px] font-semibold tracking-[-1.5px] max-[600px]:text-[27px]" aria-label="Pubby home">
-                    <span className="flex h-[23px] items-center gap-[3px] text-[#52653e] dark:text-[#c7d6b8] [&>i]:block [&>i]:h-3 [&>i]:w-[3px] [&>i]:bg-current [&>i:nth-child(2)]:h-[22px] [&>i:nth-child(3)]:h-4" aria-hidden="true">
-                        <i />
-                        <i />
-                        <i />
-                    </span>
-                    pubby
-                </Link>
-                <span className="h-10 w-px bg-border max-[760px]:hidden" />
-                <div className="flex min-w-0 gap-2.5 text-muted-foreground max-[900px]:hidden [&_h1]:text-xs [&_h1]:font-medium [&_h1]:whitespace-nowrap [&_h1]:text-foreground">
-                    {/*<Headphones size={15} />*/}
-                    <div className="flex flex-col items-start">
-                        <h1>Room ID</h1>
-                        <span className="max-[1200px]:hidden">
-                            {roomId.slice(0, 8)}
-                        </span>
-                    </div>
-                </div>
-                <div className="flex items-center gap-[7px] text-[11px] whitespace-nowrap text-muted-foreground max-[760px]:gap-1.5" role="status">
-                    <span className={cn("inline-block size-1.5 shrink-0", status === "Connected" ? "bg-accent" : "bg-muted-foreground")} aria-hidden="true" />
-                    <span className="max-[760px]:hidden">{status}</span>
-                    <span className="sr-only min-[761px]:hidden">{status}.</span>
-                    {snapshot &&
-                        <>
-                            <span className="max-[760px]:hidden" aria-hidden="true">
-                                ·
-                            </span>
-                            <span>{snapshot.members.length} online</span>
-                            <span className="max-[1200px]:hidden">· {isHost ? "Host" : "Guest"}</span>
-                        </>}
-                </div>
-            </div>
-            <div className="flex items-center gap-3 max-[760px]:gap-1.5 max-[760px]:[&>button]:px-2.5 max-[760px]:[&>button]:text-xs">
-                <button className={primaryButtonClassName} onClick={copy}><Copy size={14} />Invite</button>
-                <ThemeToggle />
-                <Link href="/" className={cn(buttonClassName, "max-[760px]:px-2.5 max-[760px]:text-xs max-[760px]:[&>span]:hidden")}><ArrowLeft size={14} /><span>Leave</span></Link>
-            </div>
-        </header>
+        <RoomNavbar roomId={roomId} status={status} onlineCount={snapshot?.members.length} isHost={isHost} onInvite={copy}/>
         {error ? <main className="overflow-auto px-7 py-10 min-[761px]:min-h-0"><p role="alert" className="my-3 text-[#d95f4e]">{error}</p><button className={buttonClassName} onClick={() => { setError(""); setRetry(v => v + 1); }}>Retry</button><p className="mt-2 text-xs text-muted-foreground">Older rooms use the previous schema. Create a new room after applying the migration.</p></main> : !snapshot || !room ? <main className="overflow-auto px-7 py-10 min-[761px]:min-h-0">Joining the room…</main> :
             <RoomWorkspace snapshot={snapshot} userId={userId} name={name} onNameChange={setName} onSaveName={saveName} savingName={savingName} busy={busy} clockOffset={clockOffset} onControl={control} onRemove={remove} onRefresh={refresh} />}
     </div>;

@@ -1,4 +1,6 @@
 "use client";
+import { useVideoDetails } from "@/hooks/use-video-details";
+import { artistOrChannel } from "@/lib/youtube-metadata";
 import { buttonClassName, inputClassName } from "@/lib/ui-styles";
 
 import { useState, useRef } from "react";
@@ -34,10 +36,14 @@ export function RoomWorkspace({ snapshot, userId, name, onNameChange, onSaveName
     const room = snapshot.room;
     const isHost = room.host_id === userId;
     const current = snapshot.queue.find(video => video.id === room.current_entry_id);
+    const details = useVideoDetails(current?.video_id || null);
 
     return <main className="grid min-h-[calc(100dvh-68px)] grid-cols-1 min-[761px]:h-full min-[761px]:min-h-0 min-[761px]:grid-cols-[minmax(0,1fr)_320px] min-[761px]:overflow-hidden min-[1001px]:grid-cols-[minmax(0,1fr)_360px] min-[1800px]:grid-cols-[minmax(0,1fr)_400px]">
         <section className="min-w-0 px-4 pt-5 pb-7 min-[761px]:grid min-[761px]:min-h-0 min-[761px]:grid-rows-[auto_minmax(0,1fr)_auto] min-[761px]:overflow-auto min-[761px]:px-5 min-[761px]:py-[18px] min-[1001px]:px-7 min-[1800px]:px-10" aria-label="Video player">
-            <div className="mb-4 flex items-center justify-between gap-4 text-[11px] min-[761px]:mb-3 min-[761px]:text-xs"><span className="text-[11px] font-semibold tracking-[px] text-accent uppercase">{current ? "Now playing" : "Ready when you are"}</span><span className="text-muted-foreground">{current ? `Added by ${current.display_name}` : "Your room, your soundtrack"}</span></div>
+            <div className="mb-4 flex min-w-0 items-center justify-between gap-4 text-[11px] min-[761px]:mb-3 min-[761px]:text-xs">
+                <div className="min-w-0"><span className="text-[10px] font-semibold tracking-[1px] text-accent uppercase">{current ? "Now playing" : "Ready when you are"}</span>{current && <h2 className="mt-1 truncate text-sm font-medium" title={details?.title}>{details?.title || "YouTube video"}</h2>}{details && <p className="truncate text-[11px] text-muted-foreground" title="Artist / YouTube channel">{artistOrChannel(details)}</p>}</div>
+                <span className="shrink-0 text-[11px] text-muted-foreground">{current ? `Added by ${current.display_name}` : "Your room, your soundtrack"}</span>
+            </div>
             <div className="mx-auto w-full max-w-[1600px] min-[761px]:flex min-[761px]:min-h-0 min-[761px]:flex-col"><YouTubePlayer key={current?.id || "empty"} videoId={current?.video_id || null} room={room} clockOffset={clockOffset} isHost={isHost} busy={busy} onControl={onControl} /></div>
             <div className="mx-auto max-w-[1600px] pt-6 min-[761px]:w-full min-[761px]:pt-4">
                 <AddVideoForm roomId={room.id} onAdded={onRefresh} />

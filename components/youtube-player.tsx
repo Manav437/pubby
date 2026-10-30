@@ -2,7 +2,7 @@
 import { buttonClassName } from "@/lib/ui-styles";
 import { cn } from "@/lib/utils";
 
-import { playbackPosition, clampSeek, formatPlaybackTime } from "@/lib/playback";
+import { playbackPosition, clampSeek, formatPlaybackTime, needsPlaybackSeek } from "@/lib/playback";
 import { useCallback, useEffect, useRef, useState } from "react";
 import YouTube, { YouTubeProps, YouTubePlayer as Player } from "react-youtube";
 import { Music2, Play, Pause, SkipForward } from "lucide-react";
@@ -39,7 +39,7 @@ export function YouTubePlayer({ videoId, room, clockOffset, isHost, busy, onCont
         const duration = p.getDuration();
         const expected = playbackPosition(state, Date.now() + offset);
         const target = duration > 0 ? clampSeek(expected, duration) : expected;
-        if (forceSeek || Math.abs(p.getCurrentTime() - target) > 2) p.seekTo(target, true);
+        if (needsPlaybackSeek(p.getCurrentTime(), target, forceSeek)) p.seekTo(target, true);
         const status = p.getPlayerState();
         if (state.is_playing && status !== 1 && status !== 3 && status !== 0) p.playVideo();
         else if (!state.is_playing && status === 1) p.pauseVideo();
